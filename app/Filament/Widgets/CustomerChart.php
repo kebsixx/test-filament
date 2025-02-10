@@ -10,6 +10,8 @@ class CustomerChart extends ChartWidget
 {
     protected static ?string $heading = 'Customer in this Month';
 
+    protected static ?int $sort = 2;
+
     protected function getData(): array
     {
         $customers = Customer::select(

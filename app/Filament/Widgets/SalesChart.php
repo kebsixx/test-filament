@@ -10,6 +10,8 @@ class SalesChart extends ChartWidget
 {
     protected static ?string $heading = 'Sales Quantity per Month';
 
+    protected static ?int $sort = 1;
+
     protected function getData(): array
     {
         $sales = Sale::select(
