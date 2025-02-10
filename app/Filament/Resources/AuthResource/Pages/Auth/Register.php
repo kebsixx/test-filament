@@ -12,13 +12,6 @@ class Register extends BaseRegister
 {
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
-    public static function getCachedSubNavigation(): array
-    {
-        return [];
-    }
-
-    protected static string $view = 'filament.resources.auth-resource.pages.auth.register';
-
     public function register(): ?RegistrationResponse
     {
         $data = $this->form->getState();
