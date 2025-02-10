@@ -2,49 +2,39 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\CustomerResource\Pages;
+use App\Filament\Resources\CustomerResource\RelationManagers;
+use App\Models\Customer;
 use Filament\Forms;
-use App\Models\User;
-use Filament\Tables;
 use Filament\Forms\Form;
-use Filament\Tables\Table;
 use Filament\Resources\Resource;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\TextInput;
+use Filament\Tables;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Forms\Components\DateTimePicker;
-use App\Filament\Resources\UserResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\UserResource\RelationManagers;
-use Filament\Actions\EditAction;
-use Filament\Forms\Components\Select;
-use Filament\Tables\Actions\SelectAction;
 
-class UserResource extends Resource
+class CustomerResource extends Resource
 {
-    protected static ?string $model = User::class;
-    protected static ?string $navigationGroup = 'Settings';
+    protected static ?string $model = Customer::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-user';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('name')
+                Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                TextInput::make('email')
+                Forms\Components\TextInput::make('email')
                     ->email()
                     ->required()
                     ->maxLength(255),
-                Select::make('role')
-                    ->options([
-                        'admin' => 'Admin',
-                        'user' => 'User',
-                    ])
-                    ->required(),
-                TextInput::make('password')
-                    ->password()
+                Forms\Components\TextInput::make('phone')
+                    ->tel()
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('address')
                     ->maxLength(255),
             ]);
     }
@@ -53,14 +43,19 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')
+                Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('email')
+                Tables\Columns\TextColumn::make('email')
                     ->searchable(),
-                TextColumn::make('created_at')
+                Tables\Columns\TextColumn::make('phone')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('address')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
-                    ->sortable(),
-                TextColumn::make('updated_at')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -88,9 +83,9 @@ class UserResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListUsers::route('/'),
-            'create' => Pages\CreateUser::route('/create'),
-            'edit' => Pages\EditUser::route('/{record}/edit'),
+            'index' => Pages\ListCustomers::route('/'),
+            'create' => Pages\CreateCustomer::route('/create'),
+            'edit' => Pages\EditCustomer::route('/{record}/edit'),
         ];
     }
 }
