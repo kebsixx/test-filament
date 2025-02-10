@@ -29,21 +29,22 @@ class SaleResource extends Resource
             ->schema([
                 Forms\Components\DatePicker::make('sale_date')
                     ->required(),
+                BelongsToSelect::make('customer_id')
+                    ->relationship('customer', 'name')
+                    ->required(),
                 BelongsToSelect::make('product_id')
                     ->relationship('product', 'name')
                     ->required()
                     ->live()
-                    ->afterStateUpdated(function ($state, Forms\Set $set) {
+                    ->afterStateUpdated(function ($state, Forms\Get $get, Forms\Set $set) {
                         $product = \App\Models\Product::find($state);
                         if ($product) {
-                            $quantity = 1;
+                            $quantity = $get('quantity') ?? 1;
                             $set('quantity', $quantity);
+                            $set('price', $product->price);
                             $set('total_price', $product->price * $quantity);
                         }
                     }),
-                BelongsToSelect::make('customer_id')
-                    ->relationship('customer', 'name')
-                    ->required(),
                 Forms\Components\TextInput::make('quantity')
                     ->required()
                     ->numeric()
@@ -54,6 +55,10 @@ class SaleResource extends Resource
                             $set('total_price', $product->price * $state);
                         }
                     }),
+                Forms\Components\TextInput::make('price')
+                    ->required()
+                    ->numeric()
+                    ->disabled(),
                 Forms\Components\TextInput::make('total_price')
                     ->required()
                     ->numeric()
@@ -71,14 +76,8 @@ class SaleResource extends Resource
                     ->date()
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('product.name')
-                    ->searchable()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('customer.name')
                     ->searchable()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('quantity')
-                    ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('total_price')
                     ->numeric()
@@ -97,6 +96,8 @@ class SaleResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -23,4 +23,23 @@ class Sale extends Model
     {
         return $this->belongsTo(Customer::class);
     }
+
+    protected static function booted()
+    {
+        static::created(function ($sale) {
+            $product = $sale->product;
+            if ($product) {
+                $product->stock -= $sale->quantity;
+                $product->save();
+            }
+        });
+
+        static::deleted(function ($sale) {
+            $product = $sale->product;
+            if ($product) {
+                $product->stock += $sale->quantity;
+                $product->save();
+            }
+        });
+    }
 }

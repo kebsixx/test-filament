@@ -12,23 +12,6 @@ class Register extends BaseRegister
 {
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
-    public function register(): ?RegistrationResponse
-    {
-        $data = $this->form->getState();
-
-        $user = static::getUserModel()::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-            'role' => $data['role'],
-            'email_verified_at' => now(),
-        ]);
-
-        $this->authenticationService->login($user);
-
-        return app(RegistrationResponse::class);
-    }
-
     protected function getForms(): array
     {
         return [
