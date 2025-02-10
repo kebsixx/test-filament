@@ -2,17 +2,20 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\SaleResource\Pages;
-use App\Filament\Resources\SaleResource\RelationManagers;
-use App\Models\Sale;
 use Filament\Forms;
-use Filament\Forms\Components\BelongsToSelect;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
+use App\Models\Sale;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use App\Filament\Exports\SaleExporter;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\SaleResource\Pages;
+use Filament\Forms\Components\BelongsToSelect;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
+use App\Filament\Resources\SaleResource\RelationManagers;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class SaleResource extends Resource
 {
@@ -98,6 +101,7 @@ class SaleResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make(),
                 ]),
             ]);
     }
